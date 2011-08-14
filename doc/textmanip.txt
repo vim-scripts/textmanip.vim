@@ -1,6 +1,6 @@
 *textmanip.txt* Maniplate selected text easily
 
-Version: 0.3
+Version: 0.4
 Author : t9md <taqumd@gmail.com>
 
 ==============================================================================
@@ -11,6 +11,7 @@ Mapping					    |textmanip-mapping|
 Configuration Examples			    |textmanip-examples|
 Use Case				    |textmanip-usecase|
 Practice				    |textmanip-practice|
+Bug     				    |textmanip-bug|
 Changelog				    |textmanip-changelog|
 
 ==============================================================================
@@ -30,42 +31,52 @@ http://github.com/t9md/vim-textmanip
 ==============================================================================
 MAPPINGS					*textmanip-mappings*
 
-These key mappings are defined in Visual mode and Operator-pending mode.
+all mappings accept |count| which specify number of `duplication` or 
+amount of `movement`.
 
-<Plug>(Textmanip.duplicate_selection_v)
-			Copy visually selected area to bottom direction.
+n <Plug>(textmanip-duplicate-down)
+v <Plug>(textmanip-duplicate-down)
+    Copy text of current line or visually selected area to `down` direction.
 
-<Plug>(Textmanip.duplicate_selection_n)
-			Copy current line text to bottom direction.
+n <Plug>(textmanip-duplicate-up)
+v <Plug>(textmanip-duplicate-up)
+    Copy text of current line or visually selected area to `up` direction.
 
-<Plug>(Textmanip.move_selection_up)
-<Plug>(Textmanip.move_selection_down)
-<Plug>(Textmanip.move_selection_right)
-<Plug>(Textmanip.move_selection_left)
-			Move visually selected text to specified direction.
-			When down direction can across EOL.
+v <Plug>(textmanip-move-up)
+v <Plug>(textmanip-move-down)
+v <Plug>(textmanip-move-right)
+v <Plug>(textmanip-move-left)
+    Move visually selected text to specified direction.
+    When down direction can across EOL.
 
 ==============================================================================
-CONFIGURAATION EXAMPLE                               *textmanip-example*
+CONFIGURATION EXAMPLE                               *textmanip-example*
 
-For mac user replace <M-*> to <D-*>. <D-> is mac COMMAND key.
+For mac user replace `<M-*>` to `<D-*>`. <D-> is mac COMMAND key.
 
-* Duplicate selected text bellow
+* gVim~
 >
-	vmap <M-d> <Plug>(Textmanip.duplicate_selection_v)
-	nmap <M-d> <Plug>(Textmanip.duplicate_selection_n)
+        xmap <M-d> <Plug>(textmanip-duplicate-down)
+        nmap <M-d> <Plug>(textmanip-duplicate-down)
+        xmap <M-D> <Plug>(textmanip-duplicate-up)
+        nmap <M-D> <Plug>(textmanip-duplicate-up)
 
-	" ### for Terminal
-	xmap D	    <Plug>(Textmanip.duplicate_selection_v)
-	nmap <Space>d <Plug>(Textmanip.duplicate_selection_n)
-<
-* Move visually selected text with "C-h,j,k,l"
+        xmap <C-j> <Plug>(textmanip-move-down)
+        xmap <C-k> <Plug>(textmanip-move-up)
+        xmap <C-h> <Plug>(textmanip-move-left)
+        xmap <C-l> <Plug>(textmanip-move-right)
 >
-	vmap <C-j> <Plug>(Textmanip.move_selection_down)
-	vmap <C-k> <Plug>(Textmanip.move_selection_up)
-	vmap <C-h> <Plug>(Textmanip.move_selection_left)
-	vmap <C-l> <Plug>(Textmanip.move_selection_right)
+* vim on terminal~
+>
+        xmap <Space>d <Plug>(textmanip-duplicate-down)
+        nmap <Space>d <Plug>(textmanip-duplicate-down)
+        xmap <Space>D <Plug>(textmanip-duplicate-up)
+        nmap <Space>D <Plug>(textmanip-duplicate-up)
 
+        xmap <C-j> <Plug>(textmanip-move-down)
+        xmap <C-k> <Plug>(textmanip-move-up)
+        xmap <C-h> <Plug>(textmanip-move-left)
+        xmap <C-l> <Plug>(textmanip-move-right)
 <
 ------------------------------------------------------------------------------
 USE CASE						 *textmanip-usecase*
@@ -93,13 +104,27 @@ PRACTICE						*textmanip-practice*
   4. <CR>		Return to normal mode.
 
 ==============================================================================
+BUG						          *textmanip-bug*
+
+When you movement visually selected text to right or left, then|:undo|, cursor
+position not restored to original position.
+
+When movement to down direction across the original EOL, |E790| error raised. 
+so I catch |E790|, only when eol_extention is needed.
+==============================================================================
 CHANGELOG						*textmanip-changelog*
 
-0.3	2011-06-13
-	- Fix typo
-0.2	2011-06-13
-	- Fix typo
-0.1	2011-03-10
+2011-08-14: v0.4
+        - support count for duplicate and move
+        - bug fix for `undojoin`
+        - refactoring,, support duplicate text to upper direction.
+        - change keymap for consistency, sorry.
+        - autoloadize!
+2011-06-13: v0.3
+        - Fix typo
+2011-06-13: v0.2
+        - Fix typo
+2011-03-10: v0.1
 	- First release
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:
