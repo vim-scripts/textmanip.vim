@@ -1,85 +1,119 @@
 *textmanip.txt* Maniplate selected text easily
 
-Version: 0.7
+
+	    .	       .
+	   -|- ,-. . , |- ,-,-. ,-. ,-. . ,-.  >
+	    |  |-'  X  |  | | | ,-| | | | | | 
+	    `' `-' ' ` `' ' ' ' `-^ ' ' ' |-' 
+					  |   < easy manupilation >
+
+Version: 1.1
 Author : t9md <taqumd@gmail.com>
 
 ==============================================================================
-CONTENTS					*textmanip-contents*
+CONTENTS						  *textmanip-contents*
 
-Introduction				    |textmanip-introduction|
-Mapping					    |textmanip-mapping|
-Configuration Examples			    |textmanip-examples|
-Use Case				    |textmanip-usecase|
-Practice				    |textmanip-practice|
-Bug     				    |textmanip-bug|
-Changelog				    |textmanip-changelog|
+Introduction					      |textmanip-introduction|
+Variables						  |textmanip-variable|
+Mapping							   |textmanip-mapping|
+Configuration Examples					  |textmanip-examples|
+Use Case						   |textmanip-usecase|
+Practice						  |textmanip-practice|
+Bug							       |textmanip-bug|
+Changelog						 |textmanip-changelog|
 
 ==============================================================================
-INTRODUCTION				      	*textmanip-introduction*
+INTRODUCTION						*textmanip-introduction*
 
 *textmanip* is minimal utility for
 
-  * duplicate text easily
-  * move visually selected text easily
+  * move visually selected text easily ( linewise / blockwise )
+  * duplicate text easily ( linewise / blockwise )
+  * count support / keep original cursor pos while moving / duplicating.
+  * undo with one 'u' by undojoining.
 
 Requirement:
-- Vim 7.0 or later
+- Vim 7.3 or later
 
 Latest Version:
 http://github.com/t9md/vim-textmanip
 
 ==============================================================================
-MAPPINGS					*textmanip-mappings*
+VARIABLES						*textmanip-variables*
+
+*g:textmanip_no_default_key_mappings*
+	Default: 0
+
+	If this value is 1, textmanip don't setup any keymap.
+	You need to setup your favorite keymap.
+	See |textmanip-mapping|.
+
+==============================================================================
+MAPPINGS						    *textmanip-mappings*
 
 all mappings accept |count| which specify number of `duplication` or 
 amount of `movement`.
 
 n <Plug>(textmanip-duplicate-down)
 v <Plug>(textmanip-duplicate-down)
+    |count| support.
     Copy text of current line or visually selected area to `down` direction.
+
 
 n <Plug>(textmanip-duplicate-up)
 v <Plug>(textmanip-duplicate-up)
+    |count| support.
     Copy text of current line or visually selected area to `up` direction.
 
 v <Plug>(textmanip-move-up)
 v <Plug>(textmanip-move-down)
 v <Plug>(textmanip-move-right)
 v <Plug>(textmanip-move-left)
+
     Move visually selected text to specified direction.
-    When down direction can across EOL.
+
+    |linewise| (|v_V| or |v_v| expand multi line)
+    move line up/down/left/right.
+    When downward move reach EOF, it automatically add empty line to be able
+    to across the original EOF.
+
+    |characterwise-visual| (|v_v|)
+    |blockwise-visual| (|v_CTRL-V|)
+    Move visual selected word or block to up/down/left/right.
+    When right direction reach EOL it automatically add one space " " to be
+    able to across original EOL.
 
 ==============================================================================
-CONFIGURATION EXAMPLE                               *textmanip-example*
+CONFIGURATION EXAMPLE					   *textmanip-example*
 
 For mac user replace `<M-*>` to `<D-*>`. <D-> is mac COMMAND key.
 
 * gVim~
 >
-        xmap <M-d> <Plug>(textmanip-duplicate-down)
-        nmap <M-d> <Plug>(textmanip-duplicate-down)
-        xmap <M-D> <Plug>(textmanip-duplicate-up)
-        nmap <M-D> <Plug>(textmanip-duplicate-up)
+	xmap <M-d> <Plug>(textmanip-duplicate-down)
+	nmap <M-d> <Plug>(textmanip-duplicate-down)
+	xmap <M-D> <Plug>(textmanip-duplicate-up)
+	nmap <M-D> <Plug>(textmanip-duplicate-up)
 
-        xmap <C-j> <Plug>(textmanip-move-down)
-        xmap <C-k> <Plug>(textmanip-move-up)
-        xmap <C-h> <Plug>(textmanip-move-left)
-        xmap <C-l> <Plug>(textmanip-move-right)
+	xmap <C-j> <Plug>(textmanip-move-down)
+	xmap <C-k> <Plug>(textmanip-move-up)
+	xmap <C-h> <Plug>(textmanip-move-left)
+	xmap <C-l> <Plug>(textmanip-move-right)
 >
 * vim on terminal~
 >
-        xmap <Space>d <Plug>(textmanip-duplicate-down)
-        nmap <Space>d <Plug>(textmanip-duplicate-down)
-        xmap <Space>D <Plug>(textmanip-duplicate-up)
-        nmap <Space>D <Plug>(textmanip-duplicate-up)
+	xmap <Space>d <Plug>(textmanip-duplicate-down)
+	nmap <Space>d <Plug>(textmanip-duplicate-down)
+	xmap <Space>D <Plug>(textmanip-duplicate-up)
+	nmap <Space>D <Plug>(textmanip-duplicate-up)
 
-        xmap <C-j> <Plug>(textmanip-move-down)
-        xmap <C-k> <Plug>(textmanip-move-up)
-        xmap <C-h> <Plug>(textmanip-move-left)
-        xmap <C-l> <Plug>(textmanip-move-right)
+	xmap <C-j> <Plug>(textmanip-move-down)
+	xmap <C-k> <Plug>(textmanip-move-up)
+	xmap <C-h> <Plug>(textmanip-move-left)
+	xmap <C-l> <Plug>(textmanip-move-right)
 <
 ------------------------------------------------------------------------------
-USE CASE						 *textmanip-usecase*
+USE CASE						   *textmanip-usecase*
 
 * Indent text block
   While editing markdown or vim help file.
@@ -96,40 +130,47 @@ USE CASE						 *textmanip-usecase*
   Of course, "<M-d>" is my choice, you can assign your favorite key map.
 
 ------------------------------------------------------------------------------
-PRACTICE						*textmanip-practice*
-
-  1. <M-l>		In normal-mode chose text-block.
-  2. <M-d>		Duplicate text-block bottom direction.
-  3. <C-l><C-l>		Right indent twice.
-  4. <CR>		Return to normal mode.
+PRACTICE						  *textmanip-practice*
 
 ==============================================================================
-BUG						          *textmanip-bug*
+BUG							       *textmanip-bug*
 
-When you movement visually selected text to right or left, then|:undo|, cursor
+When you movement visually selected text to right or left, then |:undo|, cursor
 position not restored to original position.
 
 ==============================================================================
-CHANGELOG						*textmanip-changelog*
+CHANGELOG						 *textmanip-changelog*
+2013-10-26:
+	- fix bug when cusuros at BOL and move to left with linewise.
+2013-10-24:
+	- support blockwise duplication.
+2013-10-24: v1.0
+	- completely rewriten code, and now suppport blockwise movement
+	  all direction and undoable!!
+	  keep cursor pos for all movement.
+2013-10-02:
+	- just [experiment] new action textmanip-kickout.
+2011-12-18:
+	- [bugfix] move right or left did '>' twice. should do once.
 2011-08-16: v0.7
-        - [bugfix] extend_eol not worked in some situation.
+	- [bugfix] extend_eol not worked in some situation.
 2011-08-15: v0.6
-        - [bugfix] better handling for redraw problem
+	- [bugfix] better handling for redraw problem
 2011-08-14: v0.5
-        - [bugfix] handle left and up movement limit.
-        - [bugfix] more strict check to determine continuous execution.
-        - [bugfix] remove unnecessarily `undojoin` twice, and remove
-          catch clause(E790)
+	- [bugfix] handle left and up movement limit.
+	- [bugfix] more strict check to determine continuous execution.
+	- [bugfix] remove unnecessarily `undojoin` twice, and remove
+	  catch clause(E790)
 2011-08-14: v0.4
-        - support count for duplicate and move
-        - bug fix for `undojoin`
-        - refactoring,, support duplicate text to upper direction.
-        - change keymap for consistency, sorry.
-        - autoloadize!
+	- support count for duplicate and move
+	- bug fix for `undojoin`
+	- refactoring,, support duplicate text to upper direction.
+	- change keymap for consistency, sorry.
+	- autoloadize!
 2011-06-13: v0.3
-        - Fix typo
+	- Fix typo
 2011-06-13: v0.2
-        - Fix typo
+	- Fix typo
 2011-03-10: v0.1
 	- First release
 ==============================================================================
