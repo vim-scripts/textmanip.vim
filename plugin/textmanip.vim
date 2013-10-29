@@ -29,6 +29,10 @@ vnoremap <silent> <Plug>(textmanip-move-down)  :<C-u>call textmanip#do('move', '
 vnoremap <silent> <Plug>(textmanip-move-right) :<C-u>call textmanip#do('move', 'right', 'v')<CR>
 vnoremap <silent> <Plug>(textmanip-move-left)  :<C-u>call textmanip#do('move', 'left', 'v')<CR>
 
+" experimental dirty hack
+vnoremap <silent> <Plug>(textmanip-move-right-1col) :<C-u>call textmanip#do1('move', 'right', 'v')<CR>
+vnoremap <silent> <Plug>(textmanip-move-left-1col)  :<C-u>call textmanip#do1('move', 'left', 'v')<CR>
+
 nnoremap <Plug>(textmanip-debug) :<C-u>echo textmanip#debug()<CR>
 " Experimental
 nnoremap <silent> <Plug>(textmanip-kickout) :<C-u>call textmanip#kickout(0)<CR>
@@ -36,10 +40,19 @@ vnoremap <silent> <Plug>(textmanip-kickout) :call textmanip#kickout(0)<CR>
 
 " Command [FIXME]
 command! -range -nargs=* TextmanipKickout call textmanip#kickout(<q-args>)
+command! TextmanipToggleIgnoreShiftWidth
+      \ let g:textmanip_move_ignore_shiftwidth = ! g:textmanip_move_ignore_shiftwidth
+      \ <bar> echo g:textmanip_move_ignore_shiftwidth
 "}}}
 
-if exists("g:textmanip_enable_mappings")
+if !exists("g:textmanip_enable_mappings")
   let g:textmanip_enable_mappings = 0
+endif
+if !exists("g:textmanip_move_ignore_shiftwidth")
+  let g:textmanip_move_ignore_shiftwidth = 0
+endif
+if !exists("g:textmanip_move_shiftwidth")
+  let g:textmanip_move_shiftwidth = 1
 endif
 
 function! s:set_default_mapping() "{{{
